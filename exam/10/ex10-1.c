@@ -20,10 +20,17 @@ int main(){
 
     char bufn[MAXSIZE];
     char bufp[MAXSIZE];
+    unsigned int index = 0;
 
-    while(scanf("%s", bufn) != EOF && strcmp(bufn, "0\n\0") != 0){
-        printf("yes");
+    while(scanf("%s", bufn) != EOF && strcmp(bufn, "0\0") != 0 || scanf("%s", bufp) != EOF && strcmp(bufp, "0\0") != 0){a
+        strcpy(conPtrs[index]->name, bufn);
+        strcpy(conPtrs[index++]->phone, bufp);
     }
+
+    //output
+    // for(int i = 0; i < index; i++){
+    //     printf("%s %s\n", conPtrs[i]->name, conPtrs[i]->phone);
+    // }
 }
 
 contant *lookup(contant dict[], const char key[]){
