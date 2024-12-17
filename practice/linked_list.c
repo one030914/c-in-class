@@ -13,6 +13,7 @@ locPtr cLoc(int lng, int lat);
 void append(locPtr *listPtr, locPtr loc);
 void insert(locPtr *listPtr, int index, locPtr loc);
 void show(locPtr listPtr);
+//add a deletion function and a free function.
 
 int main(){
     int x, y, i;
@@ -45,17 +46,17 @@ locPtr cLoc(int lng, int lat){
 void append(locPtr *listPtr, locPtr loc){
     if(*listPtr == NULL){
         // if the list is empty,
-        //let 'loc' become the head of list.
+        // let 'loc' become the head of list.
         *listPtr = loc;
     }else{
-        //if the list is NOT empty,
-        //follow the link to find the tail.
+        // if the list is NOT empty,
+        // follow the link to find the tail.
         locPtr tail = *listPtr;
         while(tail->next != NULL){
             tail = tail->next;
         }
 
-        //let 'loc' become new tail.
+        // let 'loc' become new tail.
         tail->next = loc;
     }
 }
@@ -67,8 +68,8 @@ void insert(locPtr *listPtr, int index, locPtr loc){
         loc->next = *listPtr;
         *listPtr = loc;
     }else{
-        //if the list is NOT empty,
-        //follow the link to the (index-1)-th node
+        // if the list is NOT empty,
+        // follow the link to the (index-1)-th node
         locPtr currentPtr = *listPtr;
         for(int i = 1; i < index; i++){
             if(currentPtr->next != NULL){
@@ -78,7 +79,7 @@ void insert(locPtr *listPtr, int index, locPtr loc){
             }
         }
 
-        //insert 'loc' after current
+        // insert 'loc' after current
         locPtr nextPtr = currentPtr->next;
         currentPtr->next = loc;
         loc->next = nextPtr;
@@ -90,13 +91,13 @@ void show(locPtr listPtr){
     printf("----\nRoute:\n");
 
     while(listPtr != NULL){
-        //print the current location and its memory address
+        // print the current location and its memory address
         printf("%2d.", i);
         printf(" (%3d, %3d)", listPtr->lng, listPtr->lat);
         printf(" %p", listPtr);
         printf(" => %p\n", listPtr->next);
 
-        //move the pointer to the next location
+        // move the pointer to the next location
         listPtr = listPtr->next;
 
         i++;
