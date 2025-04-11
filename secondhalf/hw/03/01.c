@@ -82,41 +82,70 @@ void insert(NodeP *nodeP, int data){
     }
 }
 
-void delete(NodeP *nodeP, int data){
-    NodeP cur = find(*nodeP, data);
-    if(cur != NULL){
-        NodeP *n = &cur;
-        if((*n)->left == NULL && (*n)->right == NULL){ // no child
-            if((*n)->parent->data < (*n)->data){
-                (*n)->parent->right = NULL;
-            }else{
-                (*n)->parent->left = NULL;
-            }
-            free(*n);
-        }else if((*n)->left == NULL ^ (*n)->right == NULL){ // one child
-            if((*n)->left != NULL){
-                (*n)->parent = (*n)->left;
-            }else{
-                (*n)->parent = (*n)->right;
-            }
-            free(*n);
-        }else{ // two children
-            NodeP *s = &(*n)->right;
-            while((*s)->left != NULL){
-                (*s) = (*s)->left;
-            }
-            (*n)->data = (*s)->data;
+void no_child(NodeP *nodeP, NodeP n){
+    if(n->parent == NULL){
+        *nodeP = NULL;
+    }else if(n->parent->data < n->data){
+        n->parent->right = NULL;
+    }else{
+        n->parent->left = NULL;
+    }
+    free(n);
+}
 
-            if((*s)->parent == (*n)->right){ // n's right child
-                if((*s)->right != NULL){ // have child
-                    (*n)->right = (*s)->right;
-                }else{
-                    (*n)->right = NULL;
-                }
-                free(*s);
-            }else if((*s)->parent != (*n)->right){
-                
-            }
+void one_child(NodeP *nodeP, NodeP n){
+    NodeP child = (n->left != NULL) ? n->left : n->right;
+    if(n->parent == NULL){
+        *nodeP = child;
+        child->parent = NULL;
+    }else{
+        if(n->parent->left == n){
+            n->parent->left = child;
+        }else{
+            n->parent->right = child;
+        }
+        child->parent = n->parent;
+    }
+    free(n);
+}
+
+void two_children(NodeP n){
+    NodeP s = n->right;
+    while(s->left != NULL){
+        s = s->left;
+    }
+    n->data = s->data;
+
+    if(s->parent == n){ // n's child is s
+        if(s->right != NULL){ // has child
+            n->right = s->right;
+            s->right->parent = s->parent;
+        }else{
+            n->right = NULL;
+        }
+        free(s);
+    }else{ // n's child isn't s
+        if(s->parent->left == s){
+            s->parent->left = s->right;
+        }else{
+            s->parent->right = s->right;
+        }
+        if(s->right != NULL){
+            s->right->parent = s->parent;
+        }
+        free(s);
+    }
+}
+
+void delete(NodeP *node, int data){
+    NodeP n = find(*node, data);
+    if(n != NULL){
+        if(n->left == NULL && n->right == NULL){
+            no_child(node, n);
+        }else if(n->left == NULL || n->right == NULL){
+            one_child(node, n);
+        }else{
+            two_children(n);
         }
     }else{
         return;
