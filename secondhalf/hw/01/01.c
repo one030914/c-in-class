@@ -9,29 +9,132 @@ struct Node {
 typedef struct Node Node;
 typedef struct Node *NodeP;
 
-NodeP route;
+typedef struct {
+    NodeP head, tail;
+    int len;
+} DLL;
+typedef DLL *DLLP;
 
-void init() {
-    route = (NodeP)malloc(sizeof(Node));
-    if (route == NULL) exit(1);
+DLLP init() {
+    DLLP list = (DLLP)malloc(sizeof(DLL));
+    if (list == NULL) {
+        printf("failed to malloc.\n");
+        exit(1);
+    }
 
-    route->next = route;
-    route->prev = route;
+    list->head = NULL;
+    list->tail = NULL;
+    list->len = 0;
+
+    return list;
 }
 
-void insert(int data) {
+NodeP new(int data){
     NodeP node = (NodeP)malloc(sizeof(Node));
-    if (node == NULL) exit(1);
-    NodeP head = route->next;
+    if (node == NULL) {
+        printf("failed to malloc.\n");
+        exit(1);
+    }
 
     node->data = data;
-    node->next = head; // insert a node at the front.
-    head->prev = node; // the head point to the node.
-    head = node; // move the head to the node.
-    node->prev = route; // 
+    node->prev = NULL;
+    node->next = NULL;
+    return node;
+}
+
+void append(DLLP *listP, int data) {
+    NodeP node = new(data);
+
+    if ((*listP)->head == NULL && (*listP)->tail == NULL) {
+        (*listP)->head = node;
+        (*listP)->tail = node;
+    } else {
+        node->prev = (*listP)->tail;
+        (*listP)->tail->next = node;
+        (*listP)->tail = node;
+    }
+    (*listP)->len++;
+}
+
+int pop(DLLP *listP) {
+    if ((*listP)->head == NULL && (*listP)->tail == NULL) {
+        return -1;
+    } else {
+        int data = (*listP)->tail->data;
+        NodeP prev = (*listP)->tail->prev;
+
+        if (prev == NULL) {  // one node
+            free((*listP)->tail);
+            (*listP)->head = NULL;
+            (*listP)->tail = NULL;
+        } else {
+            prev->next = NULL;
+            free((*listP)->tail);
+            (*listP)->tail = prev;
+        }
+        (*listP)->len--;
+        return data;
+    }
+}
+
+void insert(DLLP *listP, int index, int data) {
+    int length = (*listP)->len;
+
+    if (index < 0) {
+        index = length + index;
+    }
+
+    if (length == 0 && (index == 0 || index == -1)) {
+        append(listP, data);
+        return;
+    }
+
+    if (index < 0) {
+        printf("index out of range.\n");
+        return;
+    }
+
+    if ((*listP)->head == NULL && (*listP)->tail == NULL) {
+        append(listP, data);
+    } else {
+        NodeP node = new(data);
+        NodeP current = (*listP)->head;
+
+        if (index <= length / 2) {
+            current = (*listP)->head;
+            for (int i = 0; i < index; i++) {
+                current = current->next;
+            }
+        } else {
+            current = (*listP)->tail;
+            for (int i = length - 1; i > index; i--) {
+                current = current->prev;
+            }
+        }
+
+        if (index == 0) { // at first
+            node->next = current;
+            current->prev = node;
+            (*listP)->head = node;
+        } else if (index >= length) { // at last
+            node->prev = current;
+            current->next = node;
+            (*listP)->tail = node;
+        } else { // in middle
+            node->prev = current->prev;
+            node->next = current;
+            current->prev->next = node; // current previous node's next pointer is node.
+            current->prev = node; // current node's previous pointer is node.
+        }
+        (*listP)->len++;
+    }
 }
 
 void deleteV(DLLP *listP, int data) {
+    int length = (*listP)->len;
+
+    if (length == 0) return;
+
     NodeP current = (*listP)->head;
 
     while (current != NULL) {
@@ -49,48 +152,70 @@ void deleteV(DLLP *listP, int data) {
             }
 
             free(current);
+            (*listP)->len--;
             return;
         }
         current = current->next;
     }
 }
 
-void deleteF(DLLP *listP) {
-    if ((*listP)->head == NULL) return;
+void deleteI(DLLP *listP, int index) {
+    int length = (*listP)->len;
 
-    NodeP node = (*listP)->head;
-    (*listP)->head = node->next;
-
-    if ((*listP)->head) {
-        (*listP)->head->prev = NULL;
-    } else { // at first
-        (*listP)->tail = NULL;
+    if (index < 0) {
+        index = length + index;
     }
-    free(node);
-}
 
-void deleteL(DLLP *listP) {
-    if ((*listP)->tail == NULL) return;
-
-    NodeP node = (*listP)->tail;
-    (*listP)->tail = node->prev;
-
-    if ((*listP)->tail) {
-        (*listP)->tail->next = NULL;
-    } else { // at last
-        (*listP)->head = NULL;
+    if (index < 0) {
+        printf("index out of range.\n");
+        return;
     }
-    free(node);
+
+    NodeP current = (*listP)->head;
+
+    if (index <= length / 2) {
+        current = (*listP)->head;
+        for (int i = 0; i < index; i++) {
+            current = current->next;
+        }
+    } else {
+        current = (*listP)->tail;
+        for (int i = length - 1; i > index; i--) {
+            current = current->prev;
+        }
+    }
+
+    if (index == 0) { // at first
+        (*listP)->head = current->next;
+        if ((*listP)->head != NULL) {
+            current->next->prev = NULL;
+        } else { // one node
+            (*listP)->tail = NULL;
+        }
+        free(current);
+    } else if (current->next == NULL) { // at last
+        (*listP)->tail = current->prev;
+        if ((*listP)->tail != NULL) {
+            (*listP)->tail->next = NULL;
+        } else { // one node
+            (*listP)->head = NULL;
+        }
+        free(current);
+    } else { // in middle
+        current->prev->next = current->next;
+        current->next->prev = current->prev;
+        free(current);
+    }
+    (*listP)->len--;
 }
 
 void show(const DLLP *listP) {
-    int flag = 0;
+    int i = 0;
     NodeP current = (*listP)->head;
 
     while (current != NULL) {
-        if (flag) printf(" ");
+        if (i++ > 0) printf(" ");
         printf("%d", current->data);
-        flag = 1;
         current = current->next;
     }
     printf("\n");
@@ -107,14 +232,14 @@ int main() {
         scanf("%s", &cmd);
         if (strcmp(cmd, "insert") == 0) {
             scanf("%d", &data);
-            insert(&route, data);
+            insert(&route, 0, data);
         } else if (strcmp(cmd, "delete") == 0) {
             scanf("%d", &data);
             deleteV(&route, data);
         } else if (strcmp(cmd, "deleteFirst") == 0) {
-            deleteF(&route);
+            deleteI(&route, 0);
         } else if (strcmp(cmd, "deleteLast") == 0) {
-            deleteL(&route);
+            deleteI(&route, -1);
         }
     }
     show(&route);
