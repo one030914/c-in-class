@@ -5,12 +5,11 @@ typedef struct{
     char date[10];
     int balance;
     char note[SIZE];
-} Person;
+} Record;
 
 int main(){
-    char cmd, msg[SIZE];
-    int balance = 0;
-    Person p;
+    char cmd;
+    Record r;
 
     while(1){
         FILE *fp = fopen("expense.txt", "a+");
@@ -33,26 +32,28 @@ int main(){
         switch(cmd){
             case 'A':
                 printf("Please enter a record: ");
-                scanf("%s %d %s", p.date, &p.balance, p.note);
-                fprintf(fp, "%s %d %s\n", p.date, p.balance, p.note);
+                scanf("%s %d %s", r.date, &r.balance, r.note);
+                fprintf(fp, "%s %d %s\n", r.date, r.balance, r.note);
                 printf("Received.\n");
                 break;
             case 'S':
                 while(1){
                     if(feof(fp)) break;
-                    fscanf(fp, "%s %d %s\n", p.date, &p.balance, p.note);
-                    printf("%s %d %s\n", p.date, p.balance, p.note);
+                    fscanf(fp, "%s %d %s\n", r.date, &r.balance, r.note);
+                    printf("%s %d %s\n", r.date, r.balance, r.note);
                 }
                 break;
             case 'C':
+                int balance = 0;
                 while(1){
                     if(feof(fp)) break;
-                    fscanf(fp, "%s %d %s\n", p.date, &p.balance, p.note);
-                    balance += p.balance;
+                    fscanf(fp, "%s %d %s\n", r.date, &r.balance, r.note);
+                    balance += r.balance;
                 }
                 printf("Balance = %d\n", balance);
                 break;
             case 'E':
+                printf("Bye.\n");
                 return 0;
             default:
                 printf("Invalid command.\n");
