@@ -33,7 +33,7 @@ int main(){
                 printf("Please enter a record: ");
                 scanf("%s %d %s", p.date, &p.balance, p.name);
                 printf("%s %d %s\n", p.date, p.balance, p.name);
-                fprintf(fp, "%s %d %s", p.date, p.balance, p.name);
+                fprintf(fp, "%s %d %s\n", p.date, p.balance, p.name);
                 break;
             case 'S':
                 break;
