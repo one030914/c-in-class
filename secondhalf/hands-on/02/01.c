@@ -4,11 +4,12 @@
 typedef struct{
     char date[10];
     int balance;
-    char name[30];
+    char note[SIZE];
 } Person;
 
 int main(){
     char cmd, msg[SIZE];
+    int balance = 0;
     Person p;
 
     while(1){
@@ -27,17 +28,29 @@ int main(){
         
         if(scanf(" %c", &cmd) == EOF) break;
         if(cmd >= 'a' && cmd <= 'z') cmd -= 32;
-    
+
+        printf("================================\n");
         switch(cmd){
             case 'A':
                 printf("Please enter a record: ");
-                scanf("%s %d %s", p.date, &p.balance, p.name);
-                printf("%s %d %s\n", p.date, p.balance, p.name);
-                fprintf(fp, "%s %d %s\n", p.date, p.balance, p.name);
+                scanf("%s %d %s", p.date, &p.balance, p.note);
+                fprintf(fp, "%s %d %s\n", p.date, p.balance, p.note);
+                printf("Received.\n");
                 break;
             case 'S':
+                while(1){
+                    if(feof(fp)) break;
+                    fscanf(fp, "%s %d %s\n", p.date, &p.balance, p.note);
+                    printf("%s %d %s\n", p.date, p.balance, p.note);
+                }
                 break;
             case 'C':
+                while(1){
+                    if(feof(fp)) break;
+                    fscanf(fp, "%s %d %s\n", p.date, &p.balance, p.note);
+                    balance += p.balance;
+                }
+                printf("Balance = %d\n", balance);
                 break;
             case 'E':
                 return 0;
@@ -45,6 +58,7 @@ int main(){
                 printf("Invalid command.\n");
                 break;
         }
+        printf("================================\n");
         fclose(fp);
     }
 
