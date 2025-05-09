@@ -23,13 +23,11 @@ int main(int argc, char *argv[]){
             continue;
         }
 
-        while(1){
+        while(!feof(fsrc)){
             char line[SIZE] = {'\0'};
 
             if(fgets(line, SIZE, fsrc) != NULL){
                 fprintf(fdes, "%s", line);
-            }else if(feof(fsrc)){
-                break;
             }
         }
         

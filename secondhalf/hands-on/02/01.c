@@ -37,16 +37,14 @@ int main(){
                 printf("Received.\n");
                 break;
             case 'S':
-                while(1){
-                    if(feof(fp)) break;
+                while(!feof(fp)){
                     fscanf(fp, "%s %d %s\n", r.date, &r.balance, r.note);
                     printf("%s %d %s\n", r.date, r.balance, r.note);
                 }
                 break;
             case 'C':
                 int balance = 0;
-                while(1){
-                    if(feof(fp)) break;
+                while(!feof(fp)){
                     fscanf(fp, "%s %d %s\n", r.date, &r.balance, r.note);
                     balance += r.balance;
                 }
