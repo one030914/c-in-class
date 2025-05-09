@@ -42,30 +42,30 @@ Record *byDate(Record data[], unsigned int size){
     return data;
 }
 
-Record *byBal(Record *data[], unsigned int size){
+Record *byBal(Record data[], unsigned int size){
     for(int i = 0; i < size - 1; i++){
         for(int j = 0; j < size - i - 1; j++){
-            if(data[j]->balance > data[j + 1]->balance){
-                Record *tmp = data[j];
+            if(data[j].balance > data[j + 1].balance){
+                Record tmp = data[j];
                 data[j] = data[j + 1];
                 data[j + 1] = data[j];
             }
         }
     }
-    return *data;
+    return data;
 }
 
-Record *byNote(Record *data[], unsigned int size){
+Record *byNote(Record data[], unsigned int size){
     for(int i = 0; i < size - 1; i++){
         for(int j = 0; j < size - i - 1; j++){
-            if(strcmp(data[j]->note, data[j + 1]->note) > 0){
-                Record *tmp = data[j];
+            if(strcmp(data[j].note, data[j + 1].note) > 0){
+                Record tmp = data[j];
                 data[j] = data[j + 1];
                 data[j + 1] = tmp;
             }
         }
     }
-    return *data;
+    return data;
 }
 
 int main(){
@@ -124,17 +124,19 @@ int main(){
     printf("Qsort Note time used: %.6f seconds.\n", timer);
 
     start = clock();
-    // bdate = byDate(bdate, size);
+    bdate = byDate(bdate, size);
     end = clock();
     timer = (double)(end - start) / CLOCKS_PER_SEC;
     printf("Bubble Date time used: %.6f seconds.\n", timer);
     
     start = clock();
+    bbal = byBal(bbal, size);
     end = clock();
     timer = (double)(end - start) / CLOCKS_PER_SEC;
     printf("Bubble Balance time used: %.6f seconds.\n", timer);
 
     start = clock();
+    bnote = byNote(bnote, size);
     end = clock();
     timer = (double)(end - start) / CLOCKS_PER_SEC;
     printf("Bubble Note time used: %.6f seconds.\n", timer);
