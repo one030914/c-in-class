@@ -55,9 +55,9 @@ int main(){
 
     start = clock();
     int index = 0;
-    while(++index < i){
+    while(index < i){
         fprintf(qfp, "%d\n", q_arr[index]);
-        fprintf(bfp, "%d\n", sorted[index]);
+        fprintf(bfp, "%d\n", sorted[index++]);
     }
     end = clock();
     timer = (double)(end - start) / CLOCKS_PER_SEC;

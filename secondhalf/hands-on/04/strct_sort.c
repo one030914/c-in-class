@@ -143,13 +143,14 @@ int main(){
 
     start = clock();
     int index = 0;
-    while(++index < size){
+    while(index < size){
         fprintf(Qdate, "%s %d %s\n", qdate[index].date, qdate[index].balance, qdate[index].note);
         fprintf(Qbal, "%s %d %s\n", qbal[index].date, qbal[index].balance, qbal[index].note);
         fprintf(Qnote, "%s %d %s\n", qnote[index].date, qnote[index].balance, qnote[index].note);
         fprintf(Bdate, "%s %d %s\n", bdate[index].date, bdate[index].balance, bdate[index].note);
         fprintf(Bbal, "%s %d %s\n", bbal[index].date, bbal[index].balance, bbal[index].note);
         fprintf(Bnote, "%s %d %s\n", bnote[index].date, bnote[index].balance, bnote[index].note);
+        index++;
     }
     end = clock();
     timer = (double)(end - start) / CLOCKS_PER_SEC;
