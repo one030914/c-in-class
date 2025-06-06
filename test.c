@@ -3,6 +3,10 @@
 #include <time.h>
 #define SIZE 1000000
 
+void asc(const void *a, const void *b){
+    return (*(int *)a - *(int *)b);
+}
+
 void MS(int *arr, int begin, int end){
     if (begin >= end) return;
     int mid = (begin + end) / 2;
@@ -28,6 +32,9 @@ void MS(int *arr, int begin, int end){
 }
 
 int main() {
+
+    // MS(arr, 0, size - 1);
+    // qsort(arr, size, sizeof(int), asc);
 
     return 0;
 }
