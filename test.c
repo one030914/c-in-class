@@ -1,18 +1,33 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#define SIZE 100000
+#include <time.h>
+#define SIZE 1000000
 
-int main(){
-    int *arr, size = 0;
-    arr = (int *)calloc(SIZE, sizeof(int));
-    FILE *read = fopen("secondhalf\\hands-on\05\\int_1M.txt", "r");
-    while(!feof(read)){
-        fscanf(read, "%d\n", &arr[size++]);
+void MS(int *arr, int begin, int end){
+    if (begin >= end) return;
+    int mid = (begin + end) / 2;
+    MS(arr, begin, mid);
+    MS(arr, mid + 1, end);
+
+    int *tmp = (int *)calloc((end - begin + 1), sizeof(int));
+    int left = begin, right = mid + 1, index = 0;
+
+    while(left <= mid && right <= end){
+        tmp[index++] = (arr[left] < arr[right]) ? arr[left++] : arr[right++];
     }
+    while(left <= mid) {
+        tmp[index++] = arr[left++];
+    }
+    while(right <= end) {
+        tmp[index++] = arr[right++];
+    }
+    for (int i = 0; i < index; i++) {
+        arr[begin + i] = tmp[i];
+    }
+    free(tmp);
+}
 
-    
-    fclose(read);
-    free(arr);
+int main() {
+
     return 0;
 }
